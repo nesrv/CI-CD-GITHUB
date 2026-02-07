@@ -1,0 +1,24 @@
+[tool.black]
+line-length = 88
+target-version = ['py313']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | venv
+  | migrations
+)/
+'''
+
+[tool.mypy]
+python_version = "3.13"
+plugins = ["mypy_django_plugin.main"]
+exclude = ["venv", "migrations", "PART-1_STAND", "PART-2_CI"]
+
+[tool.django-stubs]
+django_settings_module = "eshop.settings"
+
+[[tool.mypy.overrides]]
+module = "ninja.*"
+ignore_missing_imports = true

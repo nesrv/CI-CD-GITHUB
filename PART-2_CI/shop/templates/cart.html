@@ -1,0 +1,18 @@
+{% if cart %}
+{% for item in cart %}
+<div class="cart-item">
+    <span>{{ item.name }} x {{ item.quantity }}</span>
+    <span>{{ item.total }} ₽</span>
+</div>
+{% endfor %}
+<div class="cart-total">Итого: {{ total }} ₽</div>
+
+<form class="order-form" hx-post="/order" hx-target="#cart" hx-swap="innerHTML">
+    <h3>Оформление заказа</h3>
+    <input type="text" name="customer_name" placeholder="Ваше имя" required>
+    <input type="email" name="customer_email" placeholder="Email" required>
+    <button type="submit">Оформить заказ</button>
+</form>
+{% else %}
+<p style="color: #999;">Корзина пуста</p>
+{% endif %}

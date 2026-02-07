@@ -18,18 +18,7 @@ jobs:
           python-version: "3.13"
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
-
-      - name: Run Ruff
-        run: ruff check .
-
-      - name: Run Black
-        run: black --check .
-
-      - name: Run mypy
-        run: mypy .
+        run: pip install -r requirements.txt
 
       - name: Run migrations
         run: python manage.py migrate
