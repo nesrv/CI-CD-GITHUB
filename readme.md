@@ -1,6 +1,4 @@
 
-![CI](https://github.com/ваш-username/ваш-repo/workflows/Django%20CI/badge.svg)
-
 ![CI](https://github.com/nesrv/CI-CD-GITHUB/workflows/Django%20CI/badge.svg)
 
 # Simple E-Shop для изучения CI/CD
