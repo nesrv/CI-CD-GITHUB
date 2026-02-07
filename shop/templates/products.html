@@ -1,0 +1,10 @@
+{% for product in products %}
+<div class="product">
+    <h3>{{ product.name }}</h3>
+    <div class="price">{{ product.price }} ₽</div>
+    <div class="description">{{ product.description }}</div>
+    <button hx-post="/cart/add/{{ product.id }}" hx-target="#cart" hx-swap="innerHTML">
+        Добавить в корзину
+    </button>
+</div>
+{% endfor %}
