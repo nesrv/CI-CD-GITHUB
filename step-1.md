@@ -6,7 +6,7 @@
 
 ### Требования
 
-- Docker Desktop установлен и запущен
+- Python 3.13+ установлен
 - Git установлен
 - Аккаунт на GitHub
 
@@ -14,34 +14,50 @@
 
 ```bash
 git clone <ваш-репозиторий>
-cd CI-CD-GIT
+cd CI-CD-GITHUB
 ```
 
 ## 2. Запуск проекта
 
-### Запуск контейнеров
+### Создание виртуального окружения
 
 ```bash
-docker-compose up --build
+# Создание виртуального окружения
+python -m venv venv
+
+# Активация (Windows)
+venv\Scripts\activate
+
+# Активация (Linux/Mac)
+source venv/bin/activate
+```
+
+### Установка зависимостей
+
+```bash
+pip install -r requirements.txt
 ```
 
 ### Создание базы данных
 
 ```bash
-# Создание миграций
-docker-compose exec web python manage.py makemigrations shop
-
 # Применение миграций
-docker-compose exec web python manage.py migrate
+python manage.py migrate
 
 # Загрузка тестовых товаров
-docker-compose exec web python load_products.py
+python load_products.py
 ```
 
 ### Создание администратора
 
 ```bash
-docker-compose exec web python manage.py createsuperuser
+python manage.py createsuperuser
+```
+
+### Запуск сервера
+
+```bash
+python manage.py runserver
 ```
 
 ## 3. Проверка работы
@@ -89,23 +105,23 @@ curl http://localhost:8000/api/health
 ## 5. Запуск тестов
 
 ```bash
-docker-compose exec web python manage.py test
+python manage.py test
 ```
 
 ## 6. Полезные команды
 
 ```bash
-# Просмотр логов
-docker-compose logs -f web
+# Создание новых миграций
+python manage.py makemigrations
 
-# Остановка контейнеров
-docker-compose down
+# Применение миграций
+python manage.py migrate
 
-# Перезапуск
-docker-compose restart
+# Запуск shell Django
+python manage.py shell
 
-# Очистка базы данных
-docker-compose down -v
+# Сбор статических файлов
+python manage.py collectstatic
 ```
 
 ---
@@ -117,14 +133,12 @@ docker-compose down -v
 - **Python 3.13+**
 - **Django 5.1**
 - **Django Ninja 1.3** (API)
-- **PostgreSQL 17**
-- **psycopg 3** (PostgreSQL adapter)
-- **Docker & Docker Compose**
+- **SQLite** (база данных)
 
 ## Структура проекта
 
 ```
-CI-CD-GIT/
+CI-CD-GITHUB/
 ├── eshop/              # Django проект
 │   ├── settings.py     # Настройки
 │   ├── urls.py         # URL маршруты
@@ -135,8 +149,6 @@ CI-CD-GIT/
 │   ├── admin.py        # Админка
 │   └── tests.py        # Тесты
 ├── requirements.txt    # Python зависимости
-├── Dockerfile         # Docker образ
-├── docker-compose.yml # Docker Compose
 ├── load_products.py   # Скрипт загрузки товаров
 └── manage.py          # Django CLI
 ```

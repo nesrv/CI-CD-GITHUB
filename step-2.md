@@ -26,6 +26,56 @@
 * публикация образов;
 * деплой на сервер (опционально).
 
+## Подготовка проекта
+
+### 0.1 Создание структуры для GitHub Actions
+
+Создайте директорию для workflows:
+
+```bash
+mkdir -p .github/workflows
+```
+
+### 0.2 Создание .gitignore
+
+Создайте файл `.gitignore` в корне проекта:
+
+```
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+db.sqlite3
+*.log
+.env
+staticfiles/
+media/
+.pytest_cache/
+.coverage
+```
+
+### 0.3 Инициализация Git репозитория
+
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+```
+
+### 0.4 Создание репозитория на GitHub
+
+1. Перейдите на https://github.com/new
+2. Создайте новый репозиторий
+3. Свяжите локальный репозиторий с GitHub:
+
+```bash
+git remote add origin <URL_вашего_репозитория>
+git branch -M main
+git push -u origin main
+```
+
+---
+
 ## Введение в GitHub Actions
 
 ### 1.1 Основные сущности
@@ -59,21 +109,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_DB: test_db
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_pass
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
       - uses: actions/checkout@v4
 
@@ -85,13 +120,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Run migrations
+        run: python manage.py migrate
+
       - name: Run tests
-        env:
-          DB_NAME: test_db
-          DB_USER: test_user
-          DB_PASSWORD: test_pass
-          DB_HOST: localhost
-          DB_PORT: 5432
         run: python manage.py test
 ```
 
@@ -150,9 +182,11 @@ python manage.py test
 
 ---
 
-## 11. Работа с secrets
+## 11. Работа с secrets (опционально)
 
 ### 11.1 GitHub Secrets
+
+Для production окружения можно использовать секреты.
 
 В репозитории:
 
@@ -161,7 +195,7 @@ python manage.py test
 Примеры:
 
 * `DJANGO_SECRET_KEY`
-* `POSTGRES_PASSWORD`
+* `DATABASE_URL`
 
 Использование:
 
@@ -169,6 +203,8 @@ python manage.py test
 env:
   SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
 ```
+
+**Для учебного проекта с SQLite это не требуется.**
 
 ---
 
@@ -217,15 +253,91 @@ class ProductTestCase(TestCase):
 
 1. Понять CI концептуально
 2. Запустить простой workflow
-3. Добавить PostgreSQL service
-4. Подключить pytest
-5. Добавить Ruff + Black
-6. Использовать secrets
-7. Подготовить Docker‑build
+3. Добавить pytest
+4. Добавить Ruff + Black
+5. Использовать secrets
+6. Подготовить Docker‑build
 
 ---
 
-## 16. Результат
+## 16. Запуск CI/CD
+
+### 16.1 Первый запуск
+
+После создания `.github/workflows/ci.yml` и push в GitHub:
+
+```bash
+git add .
+git commit -m "Add CI workflow"
+git push origin main
+```
+
+GitHub Actions запустится автоматически.
+
+### 16.2 Где наблюдать за выполнением
+
+1. Откройте ваш репозиторий на GitHub
+2. Перейдите на вкладку **Actions**
+3. Увидите список всех запусков workflow
+4. Кликните на конкретный запуск для просмотра деталей
+
+### 16.3 Визуализация процесса
+
+Во вкладке Actions вы увидите:
+
+- **Список workflow runs** - все запуски с статусами:
+  - 🟢 Зеленая галочка - успешно
+  - 🔴 Красный крестик - ошибка
+  - 🟡 Желтый кружок - выполняется
+
+- **Детали запуска** (при клике на run):
+  - Список jobs (test, build, deploy)
+  - Время выполнения каждого job
+  - Логи каждого step
+
+- **Граф выполнения**:
+  - Визуальное представление jobs
+  - Зависимости между jobs
+  - Статус каждого этапа
+
+### 16.4 Просмотр логов
+
+1. Кликните на нужный workflow run
+2. Выберите job (например, "test")
+3. Раскройте любой step для просмотра логов
+4. Можно скачать полные логи через кнопку справа
+
+### 16.5 Повторный запуск
+
+Если тест упал:
+
+1. Откройте failed workflow run
+2. Нажмите **Re-run jobs** → **Re-run failed jobs**
+3. Или **Re-run all jobs** для полного перезапуска
+
+### 16.6 Бейдж статуса
+
+Добавьте бейдж в README.md:
+
+```markdown
+![CI](https://github.com/ваш-username/ваш-repo/workflows/Django%20CI/badge.svg)
+```
+
+Бейдж покажет текущий статус CI:
+- 🟢 passing - все тесты прошли
+- 🔴 failing - есть ошибки
+
+### 16.7 Уведомления
+
+GitHub отправит email при:
+- ❌ Падении workflow
+- ✅ Восстановлении после ошибки
+
+Настройка: **Settings** → **Notifications** → **Actions**
+
+---
+
+## 17. Результат
 
 После прохождения методички у вас будет:
 

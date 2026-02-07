@@ -1,4 +1,4 @@
-# Python
+*.pyc
 __pycache__/
 *.py[cod]
 *$py.class
@@ -7,44 +7,16 @@ __pycache__/
 env/
 venv/
 ENV/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Django
-*.log
-local_settings.py
+.venv
 db.sqlite3
-db.sqlite3-journal
-/media
-/staticfiles
-
-# Environment variables
+*.log
 .env
-.env.local
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
 .DS_Store
-Thumbs.db
-
-# Docker
-*.pid
+staticfiles/
+media/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
